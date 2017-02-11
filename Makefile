@@ -1,5 +1,8 @@
 
-all: run
+all: binary run
+
+binary:
+	mkdir -p binary
 
 binary/boot.bin: arch/boot/boot.asm
 	fasm arch/boot/boot.asm binary/boot.bin
