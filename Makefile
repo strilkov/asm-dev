@@ -1,4 +1,4 @@
-
+nameVM="asm-dev"
 all: binary run
 
 binary:
@@ -17,14 +17,19 @@ file.img: binary/boot.bin binary/kernel.bin binary/test.bin
 	dd if=binary/test.bin of=file.img bs=512 count=1 seek=2 conv=notrunc
 
 clean:
-	rm binary/*.bin
+	rm binary/*
 	rm *.img
 
 run: file.img
-	virtualbox --dbg --startvm test &
+	virtualbox --dbg --startvm $(nameVM) &
 
 binary/test.bin: test/test.c
 	bcc -0 -Md -ansi -S test/test.c
 	bcc -0 -Md -ansi -c -o binary/test.o test/test.c
 	ld86 -d -o binary/test.bin binary/test.o -D8100 -T8000
 
+createVM:
+	vboxmanage createvm --name $(nameVM) --register
+	vboxmanage modifyvm $(nameVM) --ostype Other --memory 4 --boot1 floppy
+	vboxmanage storagectl $(nameVM) --name Floppy --add floppy
+	vboxmanage storageattach $(nameVM) --storagectl Floppy --type FDD --medium `pwd`/file.img --port 0 --device 0
