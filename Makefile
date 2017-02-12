@@ -1,11 +1,12 @@
 nameVM="asm-dev"
+
 all: binary run
 
 binary:
 	mkdir -p binary
 
-binary/boot.bin: arch/boot/boot.asm
-	fasm arch/boot/boot.asm binary/boot.bin
+binary/boot.bin: boot/boot.asm
+	fasm boot/boot.asm binary/boot.bin
 
 binary/kernel.bin: kernel/kernel.asm
 	fasm kernel/kernel.asm binary/kernel.bin
